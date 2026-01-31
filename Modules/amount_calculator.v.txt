@@ -1,0 +1,20 @@
+module amount_calculator (
+    input clk,
+    input reset,
+    input coin_1,
+    input coin_2,
+    input coin_5,
+    output reg [3:0] amount
+);
+
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            amount <= 0;
+        else begin
+            if (coin_1) amount <= amount + 1;
+            if (coin_2) amount <= amount + 2;
+            if (coin_5) amount <= amount + 5;
+        end
+    end
+
+endmodule

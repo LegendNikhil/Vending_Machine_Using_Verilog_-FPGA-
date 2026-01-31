@@ -1,0 +1,9 @@
+module change_calculator (
+    input  wire [3:0] amount,
+    input  wire [3:0] price,
+    output wire [3:0] change
+);
+
+    assign change = (amount > price) ? (amount - price) : 4'd0;
+
+endmodule

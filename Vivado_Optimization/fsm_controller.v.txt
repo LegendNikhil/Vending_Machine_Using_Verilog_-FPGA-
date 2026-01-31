@@ -1,0 +1,86 @@
+module fsm_controller (
+    input  wire        clk,
+    input  wire        reset,
+    input  wire [2:0]  product_sel,
+    input  wire        coin_1,
+    input  wire        coin_2,
+    input  wire        coin_5,
+    input  wire        refund,
+    input  wire        stock_available,
+    input  wire [3:0]  amount,
+    input  wire [3:0]  price,
+
+    output reg  [2:0]  state,
+    output reg         dispense,
+    output reg         do_refund
+);
+
+    /* -------- State Encoding -------- */
+    localparam RESET    = 3'b000;
+    localparam SELECT   = 3'b001;
+    localparam AMOUNT   = 3'b010;
+    localparam DISPENSE = 3'b011;
+    localparam CHANGE   = 3'b100;
+    localparam REFUND   = 3'b101;
+    localparam STOCK    = 3'b110;
+
+    reg [2:0] next_state;
+
+    /* -------- Sequential State Update -------- */
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            state <= RESET;
+        else
+            state <= next_state;
+    end
+
+    /* -------- Next-State Logic -------- */
+    always @(*) begin
+        next_state = state;
+        dispense   = 1'b0;
+        do_refund  = 1'b0;
+
+        case (state)
+
+            RESET: begin
+                next_state = SELECT;
+            end
+
+            SELECT: begin
+                if (!stock_available)
+                    next_state = STOCK;
+                else if (product_sel != 3'b000)
+                    next_state = AMOUNT;
+            end
+
+            AMOUNT: begin
+                if (refund)
+                    next_state = REFUND;
+                else if (amount >= price)
+                    next_state = DISPENSE;
+            end
+
+            DISPENSE: begin
+                dispense   = 1'b1;
+                next_state = CHANGE;
+            end
+
+            CHANGE: begin
+                next_state = RESET;
+            end
+
+            REFUND: begin
+                do_refund  = 1'b1;
+                next_state = RESET;
+            end
+
+            STOCK: begin
+                next_state = RESET;
+            end
+
+            default: next_state = RESET;
+
+        endcase
+    end
+
+endmodule

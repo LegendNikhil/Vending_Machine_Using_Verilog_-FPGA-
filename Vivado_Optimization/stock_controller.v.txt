@@ -1,0 +1,26 @@
+module stock_controller (
+    input  wire        clk,
+    input  wire        reset,
+    input  wire        dispense,
+    input  wire [2:0]  product_sel,
+    output wire        stock_available
+);
+
+    reg [3:0] stock [0:4]; // 5 products
+
+    integer i;
+
+    /* Initialize stock */
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (i = 0; i < 5; i = i + 1)
+                stock[i] <= 4'd5; // initial stock = 5
+        end
+        else if (dispense && stock[product_sel] > 0) begin
+            stock[product_sel] <= stock[product_sel] - 1;
+        end
+    end
+
+    assign stock_available = (stock[product_sel] > 0);
+
+endmodule

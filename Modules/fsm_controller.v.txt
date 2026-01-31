@@ -1,0 +1,38 @@
+module fsm_controller (
+    input clk,
+    input reset,
+    input [2:0] product_sel,
+    input coin_1,
+    input coin_2,
+    input coin_5,
+    input refund,
+    output reg [2:0] state
+);
+
+    // FSM States
+    parameter RESET     = 3'b000;
+    parameter SELECT    = 3'b001;
+    parameter AMOUNT    = 3'b010;
+    parameter DISPENSE  = 3'b100;
+    parameter CHANGE    = 3'b101;
+    parameter REFUND    = 3'b110;
+    parameter STOCK     = 3'b111;
+
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            state <= RESET;
+        else begin
+            case (state)
+                RESET:     state <= SELECT;
+                SELECT:    state <= AMOUNT;
+                AMOUNT:    state <= refund ? REFUND : DISPENSE;
+                DISPENSE:  state <= CHANGE;
+                CHANGE:    state <= RESET;
+                REFUND:    state <= RESET;
+                STOCK:     state <= RESET;
+                default:   state <= RESET;
+            endcase
+        end
+    end
+
+endmodule

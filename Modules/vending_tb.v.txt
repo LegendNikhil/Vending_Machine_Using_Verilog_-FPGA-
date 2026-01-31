@@ -1,0 +1,34 @@
+module vending_tb;
+
+    reg clk = 0;
+    reg reset = 1;
+    reg coin_1, coin_2, coin_5, refund;
+    reg [2:0] product_sel;
+
+    wire dispense;
+    wire [3:0] change;
+
+    vending_machine DUT (
+        .clk(clk),
+        .reset(reset),
+        .product_sel(product_sel),
+        .coin_1(coin_1),
+        .coin_2(coin_2),
+        .coin_5(coin_5),
+        .refund(refund),
+        .dispense(dispense),
+        .change(change)
+    );
+
+    always #5 clk = ~clk;
+
+    initial begin
+        reset = 1;
+        #10 reset = 0;
+        coin_5 = 1;
+        #10 coin_5 = 0;
+        #50;
+        $stop;
+    end
+
+endmodule

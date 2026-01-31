@@ -1,0 +1,20 @@
+module change_calculator (
+    input [2:0] state,
+    input [3:0] amount,
+    output reg [3:0] change
+);
+
+    parameter DISPENSE = 3'b100;
+
+    always @(*) begin
+        if (state == DISPENSE) begin
+            if (amount > 5)
+                change = amount - 5; // example product price
+            else
+                change = 0;
+        end
+        else
+            change = 0;
+    end
+
+endmodule

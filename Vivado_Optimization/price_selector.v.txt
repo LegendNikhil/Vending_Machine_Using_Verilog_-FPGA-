@@ -1,0 +1,16 @@
+module price_selector (
+    input  wire [2:0] product_sel,
+    output reg  [3:0] price
+);
+
+    always @(*) begin
+        case (product_sel)
+            3'd1: price = 4'd5;
+            3'd2: price = 4'd7;
+            3'd3: price = 4'd10;
+            3'd4: price = 4'd12;
+            default: price = 4'd0;
+        endcase
+    end
+
+endmodule

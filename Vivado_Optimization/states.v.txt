@@ -1,0 +1,9 @@
+typedef enum logic [2:0] {
+    S_RESET    = 3'b000,
+    S_SELECT   = 3'b001,
+    S_AMOUNT   = 3'b010,
+    S_DISPENSE = 3'b011,
+    S_CHANGE   = 3'b100,
+    S_REFUND   = 3'b101,
+    S_STOCK    = 3'b110
+} state_t;

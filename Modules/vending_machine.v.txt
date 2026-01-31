@@ -1,0 +1,54 @@
+module vending_machine (
+    input clk,
+    input reset,
+    input [2:0] product_sel,
+    input coin_1,
+    input coin_2,
+    input coin_5,
+    input refund,
+    output dispense,
+    output [3:0] change,
+    output [6:0] seg,
+    output [3:0] an
+);
+
+    wire [2:0] state;
+    wire [3:0] total_amount;
+    wire stock_available;
+
+    fsm_controller FSM (
+        .clk(clk),
+        .reset(reset),
+        .product_sel(product_sel),
+        .coin_1(coin_1),
+        .coin_2(coin_2),
+        .coin_5(coin_5),
+        .refund(refund),
+        .state(state)
+    );
+
+    amount_calculator AMT (
+        .clk(clk),
+        .reset(reset),
+        .coin_1(coin_1),
+        .coin_2(coin_2),
+        .coin_5(coin_5),
+        .amount(total_amount)
+    );
+
+    change_calculator CHG (
+        .state(state),
+        .amount(total_amount),
+        .change(change)
+    );
+
+    seven_segment_display SSD (
+        .clk(clk),
+        .value(total_amount),
+        .seg(seg),
+        .an(an)
+    );
+
+    assign dispense = (state == 3'b100); // DISPENSE STATE
+
+endmodule

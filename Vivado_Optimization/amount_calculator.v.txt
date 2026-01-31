@@ -1,0 +1,21 @@
+module amount_calculator (
+    input  wire clk,
+    input  wire reset,
+    input  wire coin_1,
+    input  wire coin_2,
+    input  wire coin_5,
+    input  wire clear,
+    output reg  [3:0] amount
+);
+
+    always @(posedge clk or posedge reset) begin
+        if (reset || clear)
+            amount <= 4'd0;
+        else begin
+            if (coin_1) amount <= amount + 1;
+            else if (coin_2) amount <= amount + 2;
+            else if (coin_5) amount <= amount + 5;
+        end
+    end
+
+endmodule
